@@ -1,5 +1,8 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import AmpareLogo from "../../assets/Vector.svg";
+import AmpareLogoAzul from "../../assets/ampare-logo2.svg";
+import Input from "../../components/Input/input";
 import "./style.css";
 
 function Home() {
@@ -53,79 +56,98 @@ function Home() {
   }
 
   return (
-    <div className="container">
-      <h1>Controle de pessoas Banho Solidário 2024</h1>
-      <form>
-        <div className="form-group">
-          <label>Qual é o seu nome?</label>
-          <input placeholder="Nome" type="text" ref={inputName} />
-        </div>
-
-        <div className="form-group">
-          <label>Qual a sua data de nascimento?</label>
-          <input placeholder="Data de nascimento" type="date" ref={inputBirthdate} />
-        </div>
-
-        <div className="form-group">
-          <label>Sexo</label>
-          <div className="gender-options">
-            <div>
-              <input
-                type="radio"
-                id="masculino"
-                name="gender"
-                value="Masculino"
-                checked={selectedGender === "Masculino"}
-                onChange={(e) => setSelectedGender(e.target.value)}
-              />
-              <label htmlFor="masculino">Masculino</label>
-            </div>
-            <div>
-              <input
-                type="radio"
-                id="feminino"
-                name="gender"
-                value="Feminino"
-                checked={selectedGender === "Feminino"}
-                onChange={(e) => setSelectedGender(e.target.value)}
-              />
-              <label htmlFor="feminino">Feminino</label>
-            </div>
-            <div>
-              <input
-                type="radio"
-                id="outro"
-                name="gender"
-                value="Outro"
-                checked={selectedGender === "Outro"}
-                onChange={(e) => setSelectedGender(e.target.value)}
-              />
-              <label htmlFor="outro">Outro</label>
-              <input
-                type="text"
-                placeholder="Especifique"
-                ref={inputOtherText}
-                disabled={selectedGender !== "Outro"}
-              />
+    <>
+      <section className="section">
+        <div className="banner">
+          <div className="banner-content-container">
+            <div className="banner-content">
+              <img src={AmpareLogo} className="ampare-logo"/>
+              <h3 className="banner-text">O extraordinário habita na</h3>
+              <span className="text-span">simplicidade</span>
             </div>
           </div>
         </div>
-
-        <div className="form-group">
-          <label>CPF ou RG (opcional)</label>
-          <input placeholder="CPF ou RG" type="text" ref={inputDocument} />
+        <div className="form-header-container">
+          <div className="form-header-content">
+            <img src={AmpareLogoAzul} style={{width: 70, height: 50}} className="ampare-logo"/>
+            <h2 style={{fontWeight: 200, color: '#005E91', fontSize: 'xx-large' }}>Grupo <span style={{fontWeight: 600}}>Ampare</span></h2>
+          </div>
+          <h1 style={{fontWeight: 700, color: '#005E91', marginTop: 80}}>Controle de pessoas Banho Solidário 2024</h1>
         </div>
+      </section>
+      <div className="container">
+        <form>
+          <>
 
-        <div className="form-group">
-          <label>Endereço (opcional)</label>
-          <textarea placeholder="Endereço" ref={inputAddress}></textarea>
+          <Input label="Qual é o seu nome hein?" type="text" />
+
+          <div className="form-group">
+            <label>Qual a sua data de nascimento?</label>
+            <input placeholder="Data de nascimento" type="date" ref={inputBirthdate} />
+          </div>
+
+          <div className="form-group">
+            <label>Sexo</label>
+            <div className="gender-options">
+              <div>
+                <input
+                  type="radio"
+                  id="masculino"
+                  name="gender"
+                  value="Masculino"
+                  checked={selectedGender === "Masculino"}
+                  onChange={(e) => setSelectedGender(e.target.value)}
+                />
+                <label htmlFor="masculino">Masculino</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="feminino"
+                  name="gender"
+                  value="Feminino"
+                  checked={selectedGender === "Feminino"}
+                  onChange={(e) => setSelectedGender(e.target.value)}
+                />
+                <label htmlFor="feminino">Feminino</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="outro"
+                  name="gender"
+                  value="Outro"
+                  checked={selectedGender === "Outro"}
+                  onChange={(e) => setSelectedGender(e.target.value)}
+                />
+                <label htmlFor="outro">Outro</label>
+                <input
+                  type="text"
+                  placeholder="Especifique"
+                  ref={inputOtherText}
+                  disabled={selectedGender !== "Outro"}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>CPF ou RG (opcional)</label>
+            <input placeholder="CPF ou RG" type="text" ref={inputDocument} />
+          </div>
+
+          <div className="form-group">
+            <label>Endereço (opcional)</label>
+            <textarea placeholder="Endereço" ref={inputAddress}></textarea>
+          </div>
+
+          <button type="button" onClick={createUsers}>
+            Enviar
+          </button>
+          </>
+        </form>
         </div>
-
-        <button type="button" onClick={createUsers}>
-          Enviar
-        </button>
-      </form>
-    </div>
+      </>
   );
 }
 
