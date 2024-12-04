@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import AmpareLogo from "../../assets/Vector.svg";
 import AmpareLogoAzul from "../../assets/ampare-logo2.svg";
-import Input from "../../components/Input/input";
 import "./style.css";
 
 function Home() {
@@ -78,9 +77,6 @@ function Home() {
       <div className="container">
         <form>
           <>
-
-          <Input label="Qual é o seu nome hein?" type="text" />
-
           <div className="form-group">
             <label>Qual a sua data de nascimento?</label>
             <input placeholder="Data de nascimento" type="date" ref={inputBirthdate} />
