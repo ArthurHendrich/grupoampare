@@ -1,6 +1,8 @@
-.container {
+/* lembra que se tu usar o mesmo nome da classe em outro arquivo css, ele vai sobrescrever o css do outro arquivo */
+
+/* .container {
     padding: 20px;
-  }
+  } */
   
   table {
     width: 100%;

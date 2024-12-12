@@ -1,0 +1,9 @@
+.weekly-patrol-banner {
+  background-image: url("../../assets/weekly-patrol.png");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 60vh;
+  clip-path: path("M0,0 L0,420 C150,520 300,440 450,480 C600,520 750,440 900,480 C1050,520 1200,410 1480,480 L5820,0 Z");
+}
