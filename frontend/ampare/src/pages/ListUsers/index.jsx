@@ -1,22 +1,32 @@
+
 import { useEffect, useState } from "react";
+import Button from "../../components/Button/button";
+import { getUsers, deleteUser } from "../../services/api";
 import "./style.css";
 
 function ListUsers() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    getUsers();
+    fetchUsers();
   }, []);
 
-  function getUsers() {
-    const usersFromLocalStorage = JSON.parse(localStorage.getItem("users")) || [];
-    setUsers(usersFromLocalStorage);
+  async function fetchUsers() {
+    try {
+      const data = await getUsers();
+      setUsers(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
   }
 
-  function deleteUser(id) {
-    const updatedUsers = users.filter((user) => user.id !== id);
-    setUsers(updatedUsers);
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
+  async function handleDeleteUser(id) {
+    try {
+      await deleteUser(id);
+      fetchUsers();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   }
 
   return (
@@ -33,6 +43,7 @@ function ListUsers() {
               <th>Sexo</th>
               <th>Documento</th>
               <th>Endereço</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -44,7 +55,7 @@ function ListUsers() {
                 <td>{user.document}</td>
                 <td>{user.address}</td>
                 <td>
-                  <button onClick={() => deleteUser(user.id)}>Excluir</button>
+                  <Button onClick={() => handleDeleteUser(user.id)} text="Excluir" />
                 </td>
               </tr>
             ))}

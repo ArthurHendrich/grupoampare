@@ -1,66 +1,47 @@
-import express from "express";
-import cors from "cors";
-import { PrismaClient } from "@prisma/client";
+const express = require('express');
+const { PrismaClient } = require('@prisma/client');
+const cors = require('cors');
 
 const prisma = new PrismaClient();
-
 const app = express();
-app.use(express.json());
+
 app.use(cors());
+app.use(express.json());
 
-app.get("/usuarios", async (req, res) => {
-  let users = [];
-
-  if (req.query) {
-    users = await prisma.user.findMany({
-      where: {
-        name: req.query.name,
-        email: req.query.email,
-        age: req.query.age,
-      },
+app.post('/api/users', async (req, res) => {
+  try {
+    const user = await prisma.user.create({
+      data: req.body,
     });
-  } else {
-    users = await prisma.user.findMany();
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-
-  res.status(200).json(users);
 });
 
-app.post("/usuarios", async (req, res) => {
-  await prisma.user.create({
-    data: {
-      name: req.body.name,
-      email: req.body.email,
-      age: req.body.age,
-    },
-  });
-
-  res.status(201).send("Tudo OK!");
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.put("/usuarios/:id", async (req, res) => {
-  await prisma.user.update({
-    where: {
-      id: req.params.id,
-    },
-    data: {
-      name: req.body.name,
-      email: req.body.email,
-      age: req.body.age,
-    },
-  });
-
-  res.status(200).json("Tudo OK!");
+app.delete('/api/users/:id', async (req, res) => {
+  try {
+    await prisma.user.delete({
+      where: { id: req.params.id },
+    });
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.delete("/usuarios/:id", async (req, res) => {
-  await prisma.user.delete({
-    where: {
-      id: req.params.id,
-    },
-  });
-
-  res.status(200).json({ message: "Usuário Excluído com Sucesso!" });
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
-
-app.listen(3000, console.log("Servidor iniciado na porta 3000"));

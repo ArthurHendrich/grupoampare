@@ -8,10 +8,6 @@ import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    {/* <nav>
-      <Link to="/">Cadastro</Link>
-      <Link to="/list">Lista de Cadastros</Link>
-    </nav> */}
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/list" element={<ListUsers />} />

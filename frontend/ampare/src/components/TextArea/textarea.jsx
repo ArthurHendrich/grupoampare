@@ -1,16 +1,19 @@
-import './style.css';
 
-const TextArea = ({ label, placeholder, className, ...props }) => {
-  return (
-    <div className={`textarea-container ${className || ""}`}>
-      {label && <label className="textarea-label">{label}</label>}
-      <textarea
-        className="textarea-field"
-        placeholder={placeholder}
-        {...props}
-      ></textarea>
-    </div>
-  );
-};
+import React, { forwardRef } from "react";
+import "./style.css";
+
+const TextArea = forwardRef(({ label, placeholder, ...props }, ref) => {
+    return (
+        <div className="textarea-container">
+            {label && <label className="textarea-label">{label}</label>}
+            <textarea
+                ref={ref}
+                className="textarea-field"
+                placeholder={placeholder}
+                {...props}
+            />
+        </div>
+    );
+});
 
 export default TextArea;

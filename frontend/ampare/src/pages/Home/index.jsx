@@ -2,46 +2,61 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import AmpareLogo from "../../assets/Vector.svg";
 import AmpareLogoAzul from "../../assets/ampare-logo2.svg";
+import Input from "../../components/Input/input";
+import RadioButton from "../../components/RadioButton/radioButton";
+import TextArea from "../../components/TextArea/textarea";
+import Button from "../../components/Button/button";
+import { createUser } from "../../services/api";
 import "./style.css";
 
 function Home() {
-  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-
   const inputName = useRef();
   const inputBirthdate = useRef();
   const inputDocument = useRef();
   const inputAddress = useRef();
   const inputOtherText = useRef();
-
-  // New state variable to track selected gender
   const [selectedGender, setSelectedGender] = useState("");
 
-  function createUsers() {
-    let gender = "Não informado";
-    if (selectedGender === "Masculino") {
-      gender = "Masculino";
-    } else if (selectedGender === "Feminino") {
-      gender = "Feminino";
-    } else if (selectedGender === "Outro") {
-      gender = inputOtherText.current.value || "Outro (não especificado)";
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (
+      !inputName.current?.value ||
+      !inputBirthdate.current?.value ||
+      !selectedGender
+    ) {
+      alert(
+        "Por favor, preencha todos os campos obrigatórios (Nome, Data de Nascimento e Sexo)",
+      );
+      return;
     }
 
-    const newUser = {
-      id: Date.now(),
-      name: inputName.current.value,
-      birthdate: inputBirthdate.current.value,
-      gender,
-      document: inputDocument.current.value || "Não informado",
-      address: inputAddress.current.value || "Não informado",
+    if (selectedGender === "Outro" && !inputOtherText.current?.value) {
+      alert("Por favor, especifique o gênero");
+      return;
+    }
+
+    const userData = {
+      name: inputName.current?.value || "",
+      birthdate: inputBirthdate.current?.value,
+      gender:
+        selectedGender === "Outro"
+          ? inputOtherText.current?.value
+          : selectedGender,
+      document: inputDocument.current?.value || "",
+      address: inputAddress.current?.value || "",
     };
 
-    const updatedUsers = [...users, newUser];
-    setUsers(updatedUsers);
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-    clearInputs();
-    navigate("/list");
-  }
+    try {
+      await createUser(userData);
+      clearInputs();
+      alert("Cadastro realizado com sucesso!");
+    } catch (error) {
+      alert("Erro ao cadastrar usuário");
+      console.error(error);
+    }
+  };
 
   function clearInputs() {
     inputName.current.value = "";
@@ -60,7 +75,7 @@ function Home() {
         <div className="banner">
           <div className="banner-content-container">
             <div className="banner-content">
-              <img src={AmpareLogo} className="ampare-logo"/>
+              <img src={AmpareLogo} className="ampare-logo" />
               <h3 className="banner-text">O extraordinário habita na</h3>
               <span className="text-span">simplicidade</span>
             </div>
@@ -68,82 +83,94 @@ function Home() {
         </div>
         <div className="form-header-container">
           <div className="form-header-content">
-            <img src={AmpareLogoAzul} style={{width: 70, height: 50}} className="ampare-logo"/>
-            <h2 style={{fontWeight: 200, color: '#005E91', fontSize: 'xx-large' }}>Grupo <span style={{fontWeight: 600}}>Ampare</span></h2>
+            <img
+              src={AmpareLogoAzul}
+              style={{ width: 70, height: 50 }}
+              className="ampare-logo"
+            />
+            <h2
+              style={{
+                fontWeight: 200,
+                color: "#005E91",
+                fontSize: "xx-large",
+              }}
+            >
+              Grupo <span style={{ fontWeight: 600 }}>Ampare</span>
+            </h2>
           </div>
-          <h1 style={{fontWeight: 700, color: '#005E91', marginTop: 80}}>Controle de pessoas Banho Solidário 2024</h1>
+          <h1 style={{ fontWeight: 700, color: "#005E91", marginTop: 80 }}>
+            Controle de pessoas Banho Solidário 2024
+          </h1>
         </div>
       </section>
       <div className="container">
-        <form>
-          <>
-          <div className="form-group">
-            <label>Qual a sua data de nascimento?</label>
-            <input placeholder="Data de nascimento" type="date" ref={inputBirthdate} />
-          </div>
+        <form onSubmit={handleSubmit}>
+          <Input
+            label="Nome *"
+            type="text"
+            ref={inputName}
+            placeholder="Nome completo"
+            required
+          />
+          <Input
+            label="Data de Nascimento *"
+            type="date"
+            ref={inputBirthdate}
+            required
+            placeholder="Data de nascimento"
+          />
 
           <div className="form-group">
-            <label>Sexo</label>
+            <label>Sexo *</label>
             <div className="gender-options">
-              <div>
-                <input
-                  type="radio"
-                  id="masculino"
-                  name="gender"
-                  value="Masculino"
-                  checked={selectedGender === "Masculino"}
-                  onChange={(e) => setSelectedGender(e.target.value)}
-                />
-                <label htmlFor="masculino">Masculino</label>
-              </div>
-              <div>
-                <input
-                  type="radio"
-                  id="feminino"
-                  name="gender"
-                  value="Feminino"
-                  checked={selectedGender === "Feminino"}
-                  onChange={(e) => setSelectedGender(e.target.value)}
-                />
-                <label htmlFor="feminino">Feminino</label>
-              </div>
-              <div>
-                <input
-                  type="radio"
-                  id="outro"
-                  name="gender"
-                  value="Outro"
-                  checked={selectedGender === "Outro"}
-                  onChange={(e) => setSelectedGender(e.target.value)}
-                />
-                <label htmlFor="outro">Outro</label>
-                <input
+              <RadioButton
+                label="Masculino"
+                name="gender"
+                value="Masculino"
+                checked={selectedGender === "Masculino"}
+                onChange={(e) => setSelectedGender(e.target.value)}
+              />
+              <RadioButton
+                label="Feminino"
+                name="gender"
+                value="Feminino"
+                checked={selectedGender === "Feminino"}
+                onChange={(e) => setSelectedGender(e.target.value)}
+              />
+              <RadioButton
+                label="Outro"
+                name="gender"
+                value="Outro"
+                checked={selectedGender === "Outro"}
+                onChange={(e) => setSelectedGender(e.target.value)}
+              />
+              {selectedGender === "Outro" && (
+                <Input
                   type="text"
                   placeholder="Especifique"
                   ref={inputOtherText}
-                  disabled={selectedGender !== "Outro"}
                 />
-              </div>
+              )}
             </div>
           </div>
 
-          <div className="form-group">
-            <label>CPF ou RG (opcional)</label>
-            <input placeholder="CPF ou RG" type="text" ref={inputDocument} />
-          </div>
+          <Input
+            label="CPF ou RG (opcional)"
+            type="text"
+            ref={inputDocument}
+            placeholder="CPF ou RG"
+          />
 
-          <div className="form-group">
-            <label>Endereço (opcional)</label>
-            <textarea placeholder="Endereço" ref={inputAddress}></textarea>
-          </div>
+          <TextArea
+            label="Endereço (opcional)"
+            ref={inputAddress}
+            placeholder="Endereço"
+          />
 
-          <button type="button" onClick={createUsers}>
-            Enviar
-          </button>
-          </>
+          <Button type="submit" text="Enviar" />
         </form>
-        </div>
-      </>
+      </div>
+    </>
   );
 }
 
